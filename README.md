@@ -3,7 +3,7 @@
 
 ## Introduction
 
-This is an unofficial snap for the [Vaultwarden](https://github.com/dani-garcia/vaultwarden) project.
+This is a community-developed snap for the [Vaultwarden](https://github.com/dani-garcia/vaultwarden) project.
 
 Vaultwarden, formerly known as bitwarden_rs, is a Rust-based implementation of the Bitwarden® server API, providing you compatibility with upstream Bitwarden® clients. Vaultwarden is perfect for self-hosted deployments where running the official resource-heavy service might not be ideal. Vaultwarden is neither associated with nor endorsed by Bitwarden® Inc.
 
@@ -37,7 +37,7 @@ Otherwise, you can simply:
 
 ## Building
 1. Follow the official Snapcraft guide [here](https://snapcraft.io/docs/create-a-new-snap) to set up your system to build snap packages.
-2. Clone this repostiory and change your working directory into it.
+2. Clone this repository and change your working directory into it.
    - $ `git clone https://github.com/DownThePark/snapcraft-vaultwarden.git`
    - $ `cd snapcraft-vaultwarden`
 3. Run the $ `snapcraft` command and wait for the build to finish.
