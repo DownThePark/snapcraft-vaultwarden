@@ -1,11 +1,16 @@
-# Vaultwarden Snap Application
+# Vaultwarden Snap
 [![vaultwarden](https://snapcraft.io/vaultwarden/badge.svg)](https://snapcraft.io/vaultwarden)
 
 ## Introduction
 
 This is an unofficial snap for the [Vaultwarden](https://github.com/dani-garcia/vaultwarden) project.
 
-Vaultwarden, formerly known as bitwarden_rs, is a Rust-based implementation of the Bitwarden® server API and provides compatibility with upstream Bitwarden® clients. This is perfect for self-hosted deployments where running the official resource-heavy service might not be ideal. Vaultwarden is neither associated with nor endorsed by Bitwarden® Inc.
+Vaultwarden, formerly known as bitwarden_rs, is a Rust-based implementation of the Bitwarden® server API, and provides you great compatibility with upstream Bitwarden® clients. Vaultwarden is perfect for self-hosted deployments where running the official resource-heavy service might not be ideal. Vaultwarden is neither associated with nor endorsed by Bitwarden® Inc.
+
+## Features
+- It features strict confinement, using only the [network](https://snapcraft.io/docs/network-interface) and [network-bind](https://snapcraft.io/docs/network-bind-interface) interfaces.
+- New snap releases are automatically built and published shortly after new versions of Vaultwarden are released from upstream.
+- External databases such as MySQL and PostgreSQL are supported.
 
 ## Installation
 Vaultwarden can be installed from the [Snap Store](https://snapcraft.io/vaultwarden) using the following command:
@@ -27,7 +32,7 @@ Vaultwarden listens on `0.0.0.0:8000` by default, and uses the HTTP protocol.
 #### HTTPS Support
 Most modern browsers will not allow you to use the cryptographic operations of Vaultwarden without HTTPS. Therefore, it is required to configure Vaultwarden with HTTPS support. The recommended way to do so is by configuring a [reverse proxy](https://github.com/dani-garcia/vaultwarden/wiki/Proxy-examples).
 
-Otherwise, you can uncomment `ROCKET_TLS` in the settings file, place a certificate file at `/var/snap/vaultwarden/current/ssl/certs.pem`, a key file at `/var/snap/vaultwarden/current/ssl/key.pem` and restart Vaultwarden.
+Otherwise, you can simply uncomment `ROCKET_TLS` in the settings file, place a certificate file at `/var/snap/vaultwarden/current/ssl/certs.pem`, a key file at `/var/snap/vaultwarden/current/ssl/key.pem` and restart Vaultwarden.
 
 #### Applying Changes
 After any changes are made, Vaultwarden will need to be restarted.
