@@ -1,0 +1,48 @@
+name: Build and publish (to stable)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "stable" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    environment: publish
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        ref: 'stable'
+
+    - name: Build
+      run: |
+        sudo sysctl -w net.ipv4.ip_forward=1
+        sudo iptables -I DOCKER-USER -i lxdbr0 -j ACCEPT
+        sudo iptables -I DOCKER-USER -o lxdbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+        sudo snap install snapcraft --classic
+        sudo lxd init --minimal
+        sudo snapcraft --build-for=amd64
+        sudo snapcraft --build-for=arm64
+        sudo snapcraft --build-for=armhf
+
+    - name: Test
+      run: |
+          sudo snap install --dangerous *amd64.snap
+          sleep 5
+          if curl 127.0.0.1:8000 | grep -q '</html>' ; then
+            echo TEST_SUCCESS=yes >> "$GITHUB_ENV"
+          else
+            echo "Testing failed"
+            exit 1
+          fi
+
+    - name: Publish
+      if: ${{ env.TEST_SUCCESS == 'yes' }}
+      env:
+        SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.STORE_LOGIN }}
+      run: |
+        snapcraft upload --release=stable *amd64.snap
+        snapcraft upload --release=stable *arm64.snap
+        snapcraft upload --release=stable *armhf.snap
