@@ -4,6 +4,8 @@ on:
   workflow_dispatch:
   push:
     branches: [ "stable" ]
+    paths:
+      - 'snap/**'
 
 jobs:
   build:
