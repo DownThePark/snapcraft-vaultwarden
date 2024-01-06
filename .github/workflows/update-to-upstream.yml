@@ -6,43 +6,43 @@ on:
     - cron: '0 12 * * *'
 
 jobs:
-  update-main-branch:
+  update:
     runs-on: ubuntu-22.04
     steps:
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: 'main'
-      - name: Fetch latest upstream version
+          fetch-depth: 0
+
+      - name: Configure git
         run: |
-          echo "upstream_version=$(curl -sL https://api.github.com/repos/dani-garcia/vaultwarden/releases/latest | jq -r ".tag_name")" >> "$GITHUB_ENV"
-          echo "local_version=$(grep 'version:' snap/snapcraft.yaml | tail -n1 | cut -c10-)" >> "$GITHUB_ENV"
-      - name: Bump snapcraft.yaml to latest upstream version
-        if: ${{ env.upstream_version != env.local_version }}
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+
+      - name: Fetch latest version
         run: |
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-            git config user.name "github-actions[bot]"
-            sed -i '2 s/.*/version: '$upstream_version'/' snap/snapcraft.yaml
-            git add snap/snapcraft.yaml
-            git commit -m "[BOT] Bump to v$upstream_version"
-            git push -u origin main
-  update-stable-branch:
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          ref: 'stable'
-      - name: Fetch latest upstream version
+          git checkout stable
+          echo "VERSION_UPSTREAM=$(curl -sL https://api.github.com/repos/dani-garcia/vaultwarden/releases/latest | jq -r ".tag_name")" >> "$GITHUB_ENV"
+          echo "VERSION_LOCAL=$(grep 'version:' snap/snapcraft.yaml | tail -n1 | cut -c10-)" >> "$GITHUB_ENV"
+
+      - name: Compare stable and main branches
         run: |
-          echo "upstream_version=$(curl -sL https://api.github.com/repos/dani-garcia/vaultwarden/releases/latest | jq -r ".tag_name")" >> "$GITHUB_ENV"
-          echo "local_version=$(grep 'version:' snap/snapcraft.yaml | tail -n1 | cut -c10-)" >> "$GITHUB_ENV"
-      - name: Bump snapcraft.yaml to latest upstream version
-        if: ${{ env.upstream_version != env.local_version }}
+          if [ "$(git rev-parse main)" = "$(git rev-parse stable)" ]; then
+            echo EQUAL=yes >> "$GITHUB_ENV"
+          fi
+
+      - name: Bump snapcraft.yaml (stable branch)
+        if: ${{ env.VERSION_UPSTREAM != env.VERSION_LOCAL }}
         run: |
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-            git config user.name "github-actions[bot]"
-            sed -i '2 s/.*/version: '$upstream_version'/' snap/snapcraft.yaml
-            git add snap/snapcraft.yaml
-            git commit -m "[BOT] Bump to v$upstream_version"
-            git push -u origin stable
+          sed -i "2 s/.*/version: $VERSION_UPSTREAM/" snap/snapcraft.yaml
+          git add snap/snapcraft.yaml
+          git commit -m "[BOT] Bump to v$VERSION_UPSTREAM"
+          git push -u origin stable
+
+      - name: Bump snapcraft.yaml (main branch)
+        if: ${{ env.VERSION_UPSTREAM != env.VERSION_LOCAL && env.EQUAL == 'yes' }}
+        run: |
+          git checkout main
+          git rebase stable main
+          git push -u origin main
