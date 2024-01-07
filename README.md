@@ -3,45 +3,47 @@
 
 ## Introduction
 
-This is a community-developed snap for the [Vaultwarden](https://github.com/dani-garcia/vaultwarden) project.
-
-Vaultwarden, formerly known as bitwarden_rs, is a Rust-based implementation of the Bitwarden® server API, providing you compatibility with upstream Bitwarden® clients. Vaultwarden is perfect for self-hosted deployments where running the official resource-heavy service might not be ideal. Vaultwarden is neither associated with nor endorsed by Bitwarden® Inc.
+This is a community-developed snap for the upstream [Vaultwarden](https://github.com/dani-garcia/vaultwarden) project, made with the aim of providing a stable, secure, and simple experience.
 
 ## Features
 - Strict confinement, using only the [network](https://snapcraft.io/docs/network-interface) and [network-bind](https://snapcraft.io/docs/network-bind-interface) interfaces.
-- New releases are automatically built and published after new upstream releases.
-- Support for external databases such as MySQL and PostgreSQL.
 - Support for the `amd64`, `arm64` and `armhf` CPU architectures.
+- Automatic stable releases following new upstream releases.
 
 ## Installation
-Vaultwarden can be installed from the [Snap Store](https://snapcraft.io/vaultwarden) using the following command:
+[![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/vaultwarden)
 
-$ `sudo snap install vaultwarden`
+Vaultwarden can be installed from the Snap Store using the following command:
+
+    sudo snap install vaultwarden
 
 ## Configuration
 
 ### Web Interface
-Vaultwarden listens on `0.0.0.0:8000` by default, and uses the HTTP protocol. See below on how to configure HTTPS.
+By default, Vaultwarden listens on `0.0.0.0:8000` using the HTTP protocol.
 
 ### Settings File
-The listening address, port, database and more are configurable via: `/var/snap/vaultwarden/current/.env`. Additional settings can be found in the upstream repository [here](https://github.com/dani-garcia/vaultwarden/blob/main/.env.template).
+The listening address, port, database and more are configurable via `/var/snap/vaultwarden/current/.env`, which comes preloaded with a number of common settings (some of which are commented out by default). If it suits your fancy, additional settings can be found in the upstream repository [here](https://github.com/dani-garcia/vaultwarden/blob/main/.env.template).
 
 ### HTTPS Support
-The recommended way to configure HTTPS is by configuring a [reverse proxy](https://github.com/dani-garcia/vaultwarden/wiki/Proxy-examples).
+The recommended way to configure HTTPS is by placing Vaultwarden behind an SSL/TLS configured [reverse proxy](https://github.com/dani-garcia/vaultwarden/wiki/Proxy-examples).
 
 Otherwise, you can simply:
 - Uncomment `ROCKET_TLS` in the settings file
-- Place the certificate(s) file at `/var/snap/vaultwarden/current/ssl/certs.pem`
-- Place the key file at `/var/snap/vaultwarden/current/ssl/key.pem`
-- Restart Vaultwarden ($ `sudo snap restart vaultwarden`)
+- Place a certificate(s) file at `/var/snap/vaultwarden/current/ssl/certs.pem`
+- Place a key file at `/var/snap/vaultwarden/current/ssl/key.pem`
+
+### Apply Changes
+Vaultwarden will need to be restarted after any changes are made to its configuration.
+
+    sudo snap restart vaultwarden
 
 ## Building
-1. Follow the official Snapcraft guide [here](https://snapcraft.io/docs/create-a-new-snap) to set up your system to build snap packages.
-2. Clone this repository and change your working directory into it.
-   - $ `git clone https://github.com/DownThePark/snapcraft-vaultwarden.git`
-   - $ `cd snapcraft-vaultwarden`
-3. Run the $ `snapcraft` command and wait for the build to finish.
+Follow the official Snapcraft guide, which you can find [here](https://snapcraft.io/docs/create-a-new-snap), to set up your system to build snap packages. Afterwards, clone this repository, change your working directory into it, and run the build.
+
+    git clone https://github.com/DownThePark/snapcraft-vaultwarden.git
+    cd snapcraft-vaultwarden
+    snapcraft
 
 ## Credits
-
-Credits go to [Daniel García](https://github.com/dani-garcia) (the main author) and everyone who contributed to this project found at https://github.com/dani-garcia/vaultwarden
+Credits go to everyone who contributed to the upstream project found at https://github.com/dani-garcia/vaultwarden
