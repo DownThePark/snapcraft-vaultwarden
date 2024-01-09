@@ -15,7 +15,12 @@ if [ ! -f $SNAP_DATA/.env ]; then
   cp $SNAP/etc/env.template $SNAP_DATA/.env
 fi
 
-# Create symlink for .env
+# Delete old symlink for .env (if it exists)
+if [ -f $SNAP_DATA/env ]; then
+  rm $SNAP_DATA/env
+fi
+
+# Create (new) symlink for .env
 if [ ! -f $SNAP_DATA/env ]; then
   ln -s $SNAP_DATA/.env $SNAP_DATA/env
 fi
